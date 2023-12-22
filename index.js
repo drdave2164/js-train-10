@@ -12,12 +12,29 @@ function customAssign(...objects) {
   // Перетворення числових значень на рядки, ітеруємо об'єкт за допомогою for in
   // якщо значення типу число конвертуємо його в рядок
   // Повернення нового об'єкта з об'єднаними та зміненими властивостями
+  if (objects.length < 2) {
+    return "Помилка: Має бути передано принаймні два об'єкти.";
+  }
+  const newObj = Object.assign(...objects);
+  //   console.log(newObj);
+  for (const targ in newObj) {
+    if (typeof newObj[targ] === 'number') {
+      newObj[targ] = newObj[targ].toString();
+    }
+  }
+  return newObj;
 }
 
 // Приклад використання функції customAssign
-console.log("Завдання: 1 ==============================");
+console.log('Завдання: 1 ==============================');
 
-console.log(customAssign({ a: 1, b: 2 }, { c: 3, d: 4 }, { e: 5, f: 6 }));
+console.log(
+  customAssign(
+    { a: 1, b: 2 },
+    { c: 3, d: 4 },
+    { e: 5, f: 6 },
+  ),
+);
 //Виведе: { a: '1', b: '2', c: '3', d: '4', e: '5', f: '6' }
 
 // Завдання: 2
@@ -32,17 +49,22 @@ function customEntries(obj) {
   // Перевірка, чи переданий аргумент є об'єктом, якщо ні повертаємо "Помилка: Аргумент не є об'єктом."
   // Використання методу `entries` для отримання масиву з усіма властивостями та значеннями
   // Повернення масиву властивостей та значень
+  if (typeof obj !== 'object') {
+    return "Помилка: Аргумент не є об'єктом.";
+  }
+  const arr = Object.entries(obj);
+  return arr;
 }
 
 // Приклад використання функції customEntries
-console.log("Завдання: 2 ==============================");
+console.log('Завдання: 2 ==============================');
 
 console.log(
   customEntries({
-    name: "John",
+    name: 'John',
     age: 30,
-    occupation: "Developer",
-  })
+    occupation: 'Developer',
+  }),
 ); //Виведе:[ [ 'name', 'John' ], [ 'age', 30 ], [ 'occupation', 'Developer' ] ]
 
 // Завдання: 3
@@ -61,19 +83,30 @@ function customObjectFromEntries(entries) {
   // Повернення обробленого запису [key, value]
   // Використання методу `fromEntries` для створення об'єкта з масиву записів
   // Повернення створеного об'єкта
+  if (!Array.isArray(entries)) {
+    return 'Помилка: Вхідний аргумент має бути масивом.';
+  }
+  const arrMod = entries.map(([key, value]) => {
+    if (typeof key === 'number') {
+      value = key.toString();
+    }
+    return [key, value];
+  });
+  const custObj = Object.fromEntries(arrMod);
+  return custObj;
 }
 
-console.log("Завдання: 3 ==============================");
+console.log('Завдання: 3 ==============================');
 
 // Виведення результату в консоль
 console.log(
   customObjectFromEntries([
-    ["a", 1],
-    [43, "Hello"],
-    ["c", 3.14],
-    ["d", "World"],
+    ['a', 1],
+    [43, 'Hello'],
+    ['c', 3.14],
+    ['d', 'World'],
     [56, 42],
-  ])
+  ]),
 ); //Виведе:{ '43': '43', '56': '56', a: 1, c: 3.14, d: 'World' }
 
 // Завдання: 4
@@ -90,9 +123,16 @@ function checkProperty(obj, prop) {
   // Перевіряємо, чи вхідний параметр prop є рядком, якщо ні, повертаємо false
   // Використовуємо метод hasOwnProperty() для перевірки наявності властивості в об'єкті
   // Повертаємо результат перевірки
+  if (typeof obj !== 'object') {
+    return false;
+  }
+  if (typeof prop !== 'string') {
+    return false;
+  }
+  return obj.hasOwnProperty(prop);
 }
-console.log("Завдання: 4 ==============================");
-console.log(checkProperty({ a: 1, b: 2, c: 3 }, "b")); // Виведе true
+console.log('Завдання: 4 ==============================');
+console.log(checkProperty({ a: 1, b: 2, c: 3 }, 'b')); // Виведе true
 
 // Завдання: 5
 
@@ -110,9 +150,24 @@ function extendAndFreezeObject(obj1, obj2) {
   // Перевіряємо, чи об'єкт "заморожено"
   // Повертаємо "заморожений" об'єкт, якщо все пройшло успішно
   // Повертаємо повідомлення про помилку, якщо об'єкт не було "заморожено"
+  if (
+    typeof obj1 !== 'object' ||
+    typeof obj2 !== 'object'
+  ) {
+    return null;
+  }
+  let addObj = Object.assign(obj1, obj2);
+  let freezObj = Object.freeze(addObj);
+  if (Object.isFrozen(freezObj)) {
+    return freezObj;
+  } else {
+    return 'Error: object is not freeze!';
+  }
 }
-console.log("Завдання: 5 ==============================");
-console.log(extendAndFreezeObject({ a: 1, b: 2 }, { c: 3, d: 4 })); // Виведе {a: 1, b: 2, c: 3, d: 4}
+console.log('Завдання: 5 ==============================');
+console.log(
+  extendAndFreezeObject({ a: 1, b: 2 }, { c: 3, d: 4 }),
+); // Виведе {a: 1, b: 2, c: 3, d: 4}
 
 // Завдання: 6
 
@@ -128,8 +183,17 @@ function keysAndValues(obj) {
   // Використовуємо метод Object.keys() для отримання масиву ключів об'єкта
   // Використовуємо метод Object.values() для отримання масиву значень об'єкта
   // Повертаємо масив з масивами ключів та значень
+  if (typeof obj !== 'object') {
+    return null;
+  }
+  let arrKeys = Object.keys(obj);
+  //   console.log(arrKeys);
+  let arrValues = Object.values(obj);
+  //   console.log(arrValues);
+  for (const [keys, values] of Object.entries(obj));
+  return [arrKeys, arrValues];
 }
-console.log("Завдання: 6 ==============================");
+console.log('Завдання: 6 ==============================');
 console.log(keysAndValues({ a: 1, b: 2, c: 3, d: 4 })); // Виведе [['a', 'b', 'c', 'd'], [1, 2, 3, 4]]
 
 // Завдання: 7
@@ -146,10 +210,20 @@ function filterObjectsByKey(arr, key) {
   // Перевіряємо, чи вхідний параметр є масивом, якщо ні, повертаємо пустий масив
   // Використовуємо метод filter() для вибірки об'єктів, що містять вказаний ключ
   // Повертаємо новий масив з об'єктами, що містять вказаний ключ
+  if (!Array.isArray(arr)) {
+    return [];
+  }
+  const filterArr = arr.filter((arr) =>
+    arr.hasOwnProperty(key),
+  );
+  return filterArr;
 }
-console.log("Завдання: 7 ==============================");
+console.log('Завдання: 7 ==============================');
 console.log(
-  filterObjectsByKey([{ a: 1, b: 2 }, { a: 3, b: 4 }, { a: 5 }], "b")
+  filterObjectsByKey(
+    [{ a: 1, b: 2 }, { a: 3, b: 4 }, { a: 5 }],
+    'b',
+  ),
 ); // Виведе [{a: 1, b: 2}, {a: 3, b: 4}]
 
 // Завдання: 8
@@ -167,8 +241,18 @@ function checkAndPreventExtensions(obj) {
   // Перевіряємо, чи можна додати нові властивості до об'єкта
   // Якщо можна, запобігаємо подальшому додаванню властивостей
   // Повторно перевіряємо, чи можна додати нові властивості до об'єкта, та повертаємо результат
+  if (typeof obj !== 'object') {
+    return false;
+  }
+
+  if (Object.isExtensible(obj) !== false) {
+    Object.preventExtensions(obj);
+    return Object.isExtensible(obj);
+  } else {
+    return Object.isExtensible(obj);
+  }
 }
-console.log("Завдання: 8 ==============================");
+console.log('Завдання: 8 ==============================');
 console.log(checkAndPreventExtensions({ a: 1, b: 2 })); // Виведе false
 
 // Завдання: 9
@@ -184,8 +268,15 @@ function sealAndCheck(obj) {
   // Перевіряємо, чи вхідний параметр є об'єктом, якщо ні, повертаємо false
   // Запечатовуємо об'єкт
   // Перевіряємо, чи запечатаний об'єкт, та повертаємо результат
+  if (typeof obj !== 'object') {
+    return false;
+  }
+  Object.seal(obj);
+  if (Object.isSealed(obj) !== false) {
+    return Object.isSealed(obj);
+  }
 }
-console.log("Завдання: 9 ==============================");
+console.log('Завдання: 9 ==============================');
 console.log(sealAndCheck({ a: 1, b: 2 })); // Виведе true
 
 // Завдання: 10
@@ -209,12 +300,27 @@ function checkOwnership(obj1, obj2, key) {
   // Якщо значення однакові, повернемо true.
   // Якщо відрізняються, повернемо false.
   // Якщо хоч один з об'єктів не має вказаного ключа, повернемо false.
+
+  if (
+    obj1.hasOwnProperty(key) &&
+    obj2.hasOwnProperty(key)
+  ) {
+    return obj1[key] === obj2[key];
+  } else {
+    return false;
+  }
 }
 
 // Приклад використання функції:
-console.log("Завдання: 10 ==============================");
+console.log('Завдання: 10 ==============================');
 
-console.log(checkOwnership({ a: 1, b: 2, c: 3 }, { a: 1, b: 2, c: 4 }, "a")); // true
+console.log(
+  checkOwnership(
+    { a: 1, b: 2, c: 4 },
+    { a: 1, b: 2, c: 4 },
+    'a',
+  ),
+); // true
 
 // Завдання: 11
 
@@ -230,9 +336,17 @@ function getObjectValuesSum(obj) {
   // Отримуємо всі значення об'єкта
   // Обчислюємо суму значень
   // Повертаємо суму
+  if (typeof obj !== 'object') {
+    return 0;
+  }
+  let objValues = Object.values(obj);
+  return objValues.reduce(
+    (accuNum, curValue) => accuNum + curValue,
+    0,
+  );
 }
 
-console.log("Завдання: 11 ==============================");
+console.log('Завдання: 11 ==============================');
 console.log(getObjectValuesSum({ a: 1, b: 2, c: 3 })); // Виведе 6
 
 // Завдання: 12
@@ -253,13 +367,37 @@ function convertArrayToObj(arr) {
   // Перевіряємо, чи існує вже ключ в об'єкті,якщо так виводимо в консоль повідомлення `У масиві є дубльований ключ: ${key}`
   // Додаємо ключ та значення до об'єкта
   // Застосовуємо метод Object.fromEntries() для створення об'єкта
+  if (!Array.isArray(arr)) {
+    return 'Empty';
+  }
+  let emptyObj = {};
+  for (let i = 0; i < arr.length; i++) {
+    let [key, value] = arr[i];
+    if (emptyObj.hasOwnProperty(key)) {
+      console.log(
+        `"У масиві є дубльований ключ: '${key}'"`,
+      );
+    }
+    emptyObj[key] = value;
+  }
+  //console.log(arr);
+
+  ///================================================================================================///
+
+  //console.log(emptyObj)  =  console.log(Object.fromEntries(Object.entries(emptyObj)))
+
+  // >>>>>>>>> Чому так ?????
+
+  ///===============================================================================================///
+
+  return Object.fromEntries(Object.entries(emptyObj));
 }
 
-console.log("Завдання: 12 ==============================");
+console.log('Завдання: 12 ==============================');
 const arr = [
-  ["a", 1],
-  ["b", 2],
-  ["c", 3],
-  ["a", 4],
+  ['a', 1],
+  ['b', 2],
+  ['c', 3],
+  ['a', 4],
 ];
 console.log(convertArrayToObj(arr)); // Виведе {a: 4, b: 2, c: 3}
